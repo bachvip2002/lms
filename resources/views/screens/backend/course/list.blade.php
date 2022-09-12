@@ -14,7 +14,7 @@
         <div class="alert alert-danger text-center">{{ session()->get('error') }}</div>
         @endif
         <!--begin::table-->
-        <a href="" class="btn btn-primary mr-2 mb-3">Thêm khóa học</a>
+        <a href="{{ route('admin.course.create') }}" class="btn btn-primary mr-2 mb-3">Thêm khóa học</a>
         <div class="card card-custom gutter-b">
             <div class="card-body">
                 <form action="">
@@ -50,7 +50,7 @@
                                         <div class="d-flex align-items-center">
                                             <label class="mr-3 mb-0 d-none d-md-block">Trạng thái:</label>
                                             <select name="status" class="form-control">
-                                                <option value="" selected>All</option>
+                                                <option value="" selected>Tất cả</option>
                                                 <option value="1" {{ request()->query('status') == "1" ? 'selected' : '' }}>Công khai</option>
                                                 <option value="0" {{ request()->query('status') == "0" ? 'selected' : '' }}>Riêng tư</option>
                                             </select>
@@ -96,13 +96,13 @@
                                             <a class="dropdown-item" href="#">Action</a>
                                             <a class="dropdown-item" href="{{ route('admin.course.edit', $course->id) }}">Chỉnh sửa</a>
                                             <form action="{{ route('admin.course.changestatus', $course->id) }}" method="POST" class="dropdown-item">
-                                                @csrf 
+                                                @csrf
                                                 @method('PATCH')
                                                 <button class="btn btn-link-dark">Thay đổi trạng thái</button>
                                             </form>
                                             <div class="dropdown-divider"></div>
                                             <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="dropdown-item">
-                                                @csrf 
+                                                @csrf
                                                 @method('DELETE')
                                                 <button class="btn btn-link-danger btn-block text-left delete-item">Xóa</button>
                                             </form>
@@ -128,7 +128,7 @@
                     <div class="card-body pt-4">
                         <!--begin::Toolbar-->
                         <div class="d-flex justify-content-end">
-                            <div class="dropdown dropdown-inline" data-toggle="tooltip" title="" data-placement="left" data-original-title="Quick actions">
+                            <div class="dropdown dropdown-inline">
                                 <a href="#" class="btn btn-clean btn-hover-light-primary btn-sm btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="ki ki-bold-more-hor"></i>
                                 </a>
@@ -137,16 +137,16 @@
                                     <ul class="navi navi-hover">
                                         <a class="dropdown-item" href="{{ route('admin.course.edit', $course->id) }}">Chỉnh sửa</a>
                                         <form action="{{ route('admin.course.changestatus', $course->id) }}" method="POST" class="dropdown-item">
-                                            @csrf 
+                                            @csrf
                                             @method('PATCH')
                                             <button class="btn btn-link-dark">Thay đổi trạng thái</button>
                                         </form>
                                         <div class="dropdown-divider"></div>
-                                        <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="dropdown-item">
-                                            @csrf 
+                                        {{-- <form action="{{ route('admin.course.delete', $course->id) }}" method="POST" class="dropdown-item">
+                                            @csrf
                                             @method('DELETE')
                                             <button class="btn btn-link-danger btn-block text-left delete-item">Xóa</button>
-                                        </form>
+                                        </form> --}}
                                     </ul>
                                     <!--end::Navigation-->
                                 </div>
@@ -159,7 +159,7 @@
                         </div>
                         <!--end::User-->
                         <!--begin::Desc-->
-                        <h4 class="mb-7 font-weight-bold">{{ $course->title }}</h4>
+                        <h4 class=" mb-7 font-weight-bold"><a class="text-dark text-hover-primary" href="{{route('report.report_course',$course->id)}}">{{ $course->title }}</a> </h4>
                         <!--end::Desc-->
                         <!--begin::Info-->
                         <div class="mb-7">

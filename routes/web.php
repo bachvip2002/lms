@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\ClassroomDetailController;
+use App\Http\Controllers\CourseListController;
+use App\Http\Controllers\DoQuizController;
+use App\Http\Controllers\EssayGradingController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ResultController;
+use GuzzleHttp\Psr7\MimeType;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,26 +21,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('screens.frontend.index');
+Route::prefix('/')->middleware('auth','verified')->name('frontend.')->group(function(){
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/course-detail/{quiz_id}',[DoQuizController::class,'index'])->name('coursedetail');
+    Route::post('/doquiz',[DoQuizController::class,'doquiz'])->name('doquiz');
+    Route::get('/essay-grading/{quiz_id}',[EssayGradingController::class,'index'])->name('essaygrading');
+    Route::get('/result/{quiz_id}',[ResultController::class,'index'])->name('result');
 });
 
-Route::get('/login', function() {
-    return view('screens.frontend.login');
-});
 
-Route::get('/admin', function(){
-    return view('screens.backend.dashboard');
-});
+Route::get('/admin', [DashboardController::class, 'index'])->middleware(['auth', 'role:admin|teacher'])->name('admin');
+
 
 // preview pdf
-Route::get('/pdf/{file}', function ($file) {
+Route::get('/doc-viewer/{file}', function ($file) {
     // file path
-   $path = public_path('documents\pdf\lesson\\' . $file);
+   $path = public_path($file);
+  //  dd($path);
+  $mimeType = MimeType::fromFilename($path);
     // header
    $header = [
-     'Content-Type' => 'application/pdf',
+     'Content-Type' => $mimeType,
      'Content-Disposition' => 'inline; filename="' . $file . '"'
    ];
   return response()->file($path, $header);
-})->name('pdf');
+})->name('doc-viewer')->where('file', '.*');
+

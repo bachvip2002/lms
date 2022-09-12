@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -26,6 +27,10 @@ class User extends Authenticatable
         'status'
     ];
 
+
+    protected $attributes = [
+        'status' => 1
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -73,5 +78,14 @@ class User extends Authenticatable
     //1 User có nhiều kết quả bài quiz
     public function quiz_results(){
         return $this->hasMany(QuizResult::class,'user_id','id');
+    }
+
+    public function quizs(){
+        return $this->belongsToMany(
+            Quiz::class,
+            'user_quiz',
+            'user_id',
+            'quiz_id'
+        );
     }
 }

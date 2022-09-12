@@ -32,6 +32,11 @@ class Lesson extends Model
 
     //Quiz trong các bài học
     public function quizs(){
+
         return $this->belongsToMany(Quiz::class, 'lesson_quiz', 'lesson_id', 'quiz_id');
+    }
+
+    public function lesson_histories(){
+        return $this->hasMany(LessonHistory::class, 'lesson_id','id');
     }
 }

@@ -35,7 +35,7 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
-            
+
             Route::middleware('web')
             ->group(base_path('routes/auth.php'));
 
@@ -65,7 +65,10 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
             ->group(base_path('routes/quiz.php'));
-            
+
+            Route::middleware('web')
+            ->group(base_path('routes/report.php'));
+
         });
     }
 
@@ -78,6 +81,18 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('login', function(Request $request){
+            $key = 'login.' .$request->ip();
+            $max = 5;
+            $decay = 60;
+            if(RateLimiter::tooManyAttempts($key, $max)){
+                return back()->with('message', 'Vui lòng chờ đợi...');
+            }
+            else{
+                RateLimiter::hit($key, $decay);
+            }
         });
     }
 }
